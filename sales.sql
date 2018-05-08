@@ -27,3 +27,19 @@ CREATE TABLE IF NOT EXISTS Vendor ( id SERIAL NOT NULL PRIMARY KEY,
 -- \d Customer
 -- \d Staff
 -- \d Vendor
+
+
+CREATE TABLE IF NOT EXISTS Category ( id SERIAL NOT NULL PRIMARY KEY,
+       name VARCHAR(50) NOT NULL );
+
+CREATE TABLE IF NOT EXISTS Product ( id SERIAL NOT NULL PRIMARY KEY,
+       name VARCHAR(50) NOT NULL,
+       description VARCHAR(100) NOT NULL,
+       price INTEGER NOT NULL DEFAULT 0,
+       quantity INTEGER NOT NULL DEFAULT 0,
+       vendor_id INTEGER NOT NULL REFERENCES Vendor (id) DEFAULT 0,
+       category_id INTEGER NOT NULL REFERENCES Category (id) DEFAULT 0 );
+
+
+-- \d Category
+-- \d Product
