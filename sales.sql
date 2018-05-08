@@ -43,3 +43,20 @@ CREATE TABLE IF NOT EXISTS Product ( id SERIAL NOT NULL PRIMARY KEY,
 
 -- \d Category
 -- \d Product
+
+
+CREATE TABLE IF NOT EXISTS Purchase ( id SERIAL NOT NULL PRIMARY KEY,
+       purchase_date date NOT NULL,
+       invoice_number VARCHAR(50) NOT NULL,
+       customer_id INTEGER NOT NULL REFERENCES Customer (id) DEFAULT 0,
+       total_price INTEGER NOT NULL DEFAULT 0 );
+
+CREATE TABLE IF NOT EXISTS PurchaseDetail (
+       purchase_id INTEGER NOT NULL REFERENCES Purchase (id) DEFAULT 0,
+       product_id INTEGER NOT NULL REFERENCES Product (id) DEFAULT 0,
+       total_price INTEGER NOT NULL DEFAULT 0,
+       quantity INTEGER NOT NULL DEFAULT 0 );
+
+
+-- \d Purchase
+-- \d PurchaseDetail
