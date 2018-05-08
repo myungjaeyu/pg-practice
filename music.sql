@@ -107,3 +107,117 @@ VALUES (default, 1, 1, 2.34),
        (default, 9, 25, 6.22),
        (default, 10, 26, 6.04),
        (default, 10, 27, 6.08);
+
+
+SELECT *
+  FROM Track
+ WHERE album_id = 1;
+-- 1번 앨범 내역
+
+SELECT * 
+  FROM Album
+ WHERE artist_id = 1;
+ -- 1번 아티스트 내역
+
+SELECT id,
+       replay_time
+  FROM Track 
+ORDER BY replay_time DESC
+LIMIT 1;
+-- 가장 긴 재생 시간을 가진 음원 내역
+
+SELECT name,
+       replay_time
+  FROM Song,
+       Track
+WHERE Song.id = Track.song_id
+ORDER BY Track.replay_time DESC
+LIMIT 1;
+-- 가장 긴 재생 시간을 가진 음원의 명
+
+SELECT *
+  FROM Album
+ WHERE production_year BETWEEN '1960-1-1' AND '1969-12-31';
+ -- 60년대 앨범 내역
+
+SELECT COUNT(a)
+  FROM (SELECT Album.id
+          FROM Album
+         WHERE production_year BETWEEN '1960-1-1' 
+           AND '1969-12-31') AS a;
+ -- 60년대 앨범 수
+ 
+SELECT *
+  FROM Album
+ WHERE production_year IN (SELECT DISTINCT MAX(production_year)
+                             FROM Album
+                           GROUP BY artist_id)
+ORDER BY artist_id ASC;
+-- 아티스트의 최신 앨범 내역
+
+SELECT *
+  FROM Album
+ WHERE production_year IN (SELECT DISTINCT MIN(production_year)
+                             FROM Album
+                           GROUP BY artist_id)
+ORDER BY artist_id ASC;
+-- 아티스트의 데뷔 앨범 내역
+
+SELECT Album.id,
+       Album.name,
+       SUM(Track.replay_time) AS a_sum
+  FROM Track,
+       Album
+ WHERE Album.id = Track.album_id
+ GROUP BY Album.id
+ ORDER BY a_sum;
+-- 앨범내 트랙의 재생 시간 합계 내역
+
+SELECT Album.id,
+       Album.name,
+       SUM(Track.replay_time) AS a_sum
+  FROM Track,
+       Album
+ WHERE Album.id = Track.album_id
+ GROUP BY Album.id
+ ORDER BY a_sum DESC 
+ LIMIT 1;
+-- 앨범내 트랙의 재생시간을 합했을 때 가장긴 
+
+SELECT People.name,
+       COUNT(Album.id) as album_count
+FROM Album,
+     People
+WHERE Album.artist_id = People.id
+GROUP BY People.name
+ORDER BY album_count DESC;
+-- 다수의 앨범을 가진 사람들의 정렬 내역
+
+SELECT People.name,
+       COUNT(Album.id) as album_count
+FROM Album,
+     People
+WHERE Album.artist_id = People.id
+GROUP BY People.name
+ORDER BY album_count DESC 
+LIMIT 3;
+-- 다수의 앨범을 가진 3인의 정렬 내역
+
+SELECT People.name,
+       COUNT(Song.id) as song_count
+  FROM Song,
+       People
+ WHERE Song.writer_id = People.id
+GROUP BY People.name
+ORDER BY song_count DESC;
+-- 다수의 곡을 가진 사람들의 정렬 내역
+
+SELECT People.name,
+       COUNT(Song.id) as song_count
+  FROM Song,
+       People
+ WHERE Song.writer_id = People.id
+GROUP BY People.name
+ORDER BY song_count DESC
+LIMIT 1;
+-- 가장 많은 곡을 가진 사람 내역
