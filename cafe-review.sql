@@ -40,3 +40,35 @@ VALUES (default, 1, 1, 5, '리뷰 제목', '리뷰 내용'),
        (default, 2, 3, 5, '리뷰 제목', '리뷰 내용'),
        (default, 2, 4, 3, '리뷰 제목', '리뷰 내용'),
        (default, 3, 4, 3, '리뷰 제목', '리뷰 내용');
+
+
+SELECT *
+  FROM CafeReview,
+       Cafe
+ WHERE CafeReview.cafe_id = Cafe.id
+   AND Cafe.name = 'A 카페';
+-- A 카페 리뷰 내역
+
+SELECT *
+  FROM CafeReview,
+       Cafe 
+ WHERE CafeReview.cafe_id = Cafe.id
+   AND Cafe.id = 1;
+-- 1번 카페 리뷰 내역
+
+SELECT *
+  FROM CafeReview,
+       Reviewer
+ WHERE CafeReview.reviewer_id = Reviewer.id
+   AND Reviewer.name = '이 BW';
+-- 이 BW 작성 리뷰 내역 
+
+SELECT Cafe.name,
+       Cafe.address,
+       stars,
+       title,
+       review
+  FROM CafeReview,
+       Cafe
+  WHERE CafeReview.cafe_id = Cafe.id;
+-- 리뷰에 대한 카페 정보 내역
