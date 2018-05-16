@@ -145,3 +145,109 @@ VALUES (1, 1, 9000, 1),
 
        (7, 1, 9000, 1),
        (7, 8, 9000, 1);
+
+
+SELECT *
+  FROM Vendor,
+       Product
+ WHERE Vendor.id = Product.vendor_id
+   AND Vendor.id = 1;
+-- 1번 벤더의 상품 내역
+
+SELECT Product.id,
+       Product.name,
+       Product.description,
+       Product.price,
+       Product.quantity,
+       Product.vendor_id
+  FROM Category,
+       Product
+  WHERE Category.id = Product.category_id
+    AND Category.id = 1;
+-- 1번 카테고리의 상품 내역
+
+SELECT Purchase.id,
+       Purchase.purchase_date,
+       Purchase.invoice_number,
+       Purchase.total_price
+  FROM Customer,
+       Purchase
+ WHERE Customer.id = Purchase.customer_id
+   AND Customer.id = 1;
+-- 1번 고객의 주문 내역
+
+SELECT PurchaseDetail.product_id,
+       PurchaseDetail.quantity,
+       PurchaseDetail.total_price
+  FROM Purchase,
+       PurchaseDetail
+ WHERE Purchase.id = PurchaseDetail.purchase_id
+   AND Purchase.id = 1;
+-- 1번 주문의 세부 상품 내역
+
+SELECT Product.name               AS name,
+       PurchaseDetail.total_price AS totalPrice,
+       PurchaseDetail.quantity    AS quantity,
+       PurchaseDetail.purchase_id AS purchaseId,
+       Product.vendor_id          AS vendorId,
+       Product.category_id        AS categoryId,
+       Purchase.invoice_number    AS invoiceNumber,
+       Purchase.purchase_date     AS purchaseDate
+  FROM PurchaseDetail 
+LEFT JOIN Product 
+    ON PurchaseDetail.product_id = Product.id 
+LEFT JOIN Purchase 
+    ON PurchaseDetail.purchase_id = Purchase.id
+ WHERE Product.id = 1;
+-- 1번 상품의 판매 내역 통합 정보
+
+SELECT Purchase.*,
+       Customer.first_name   AS firstName,
+       Customer.last_name    AS lastName,
+       Customer.address      AS address,
+       Customer.phone_number AS phoneNumber
+  FROM Purchase 
+LEFT JOIN Customer 
+    ON Purchase.customer_id = Customer.id
+ WHERE Purchase.id = 1;
+-- 1번 주문 내역의 고객 통합 정보
+
+SELECT id,
+       name,
+       email,
+       (SELECT SUM(PurchaseDetail.total_price)
+          FROM PurchaseDetail,
+               Product
+          WHERE PurchaseDetail.product_id = Product.id
+            AND Product.vendor_id = Vendor.id
+        ) AS purchase_total_price
+  FROM Vendor;
+-- 모든 벤더의 상품 판매 수익 1
+
+SELECT id,
+       name,
+       email,
+       (SELECT SUM(PurchaseDetail.total_price)
+          FROM PurchaseDetail 
+        LEFT JOIN Product
+            ON PurchaseDetail.product_id = Product.id
+         WHERE Product.vendor_id = Vendor.id
+        ) AS purchase_total_price
+  FROM Vendor;
+-- 모든 벤더의 상품 판매 수익 2
+
+SELECT id,
+       name,
+       email,
+       (SELECT 
+            SUM(1)
+          FROM Purchase 
+        LEFT JOIN PurchaseDetail
+            ON Purchase.id = PurchaseDetail.purchase_id
+        LEFT JOIN Product
+            ON PurchaseDetail.product_id = Product.id
+         WHERE Product.vendor_id = Vendor.id
+        ) AS purchase_total_customer
+  FROM Vendor
+ WHERE id = 1;
+-- 1번 벤더의 상품을 구매한 고객 내역
